@@ -2668,3 +2668,55 @@ dialog .modal {
     width: 100%;
   }
 }
+
+@media (max-width: 800px) {
+  .actions {
+    grid-template-columns: minmax(0, 1fr) 40px 40px !important;
+  }
+
+  #manageViewsBtn {
+    display: inline-flex !important;
+    width: 40px;
+    padding-inline: 0;
+  }
+
+  #newItemBtn {
+    width: 40px;
+    min-width: 40px;
+    padding-inline: 0;
+  }
+
+  #newItemBtn span:last-child {
+    display: none;
+  }
+
+  .app-footer p {
+    max-width: 340px;
+    margin-inline: auto;
+    line-height: 1.45;
+  }
+
+  .app-footer p > a {
+    margin-right: 100%;
+  }
+
+  .login-brand {
+    grid-template-columns: 58px minmax(0, 1fr);
+  }
+
+  .login-logo {
+    width: 58px;
+    height: 58px;
+    border-radius: 17px;
+  }
+
+  .mobile-break {
+    display: block;
+  }
+}
+
+@media (min-width: 801px) {
+  .mobile-break {
+    display: none;
+  }
+}

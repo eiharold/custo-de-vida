@@ -334,6 +334,8 @@ async function setupLogin() {
     await startLoadingSequence(currentUser);
   } else {
     document.body.classList.add("app-locked");
+    els.loadingScreen?.classList.add("is-hidden");
+    els.loginScreen?.classList.remove("is-hidden");
     setTimeout(() => els.loginUser?.focus(), 0);
   }
 
