@@ -2887,7 +2887,42 @@ dialog .modal {
     padding-inline: 6px;
   }
 
-  .modal-actions .btn-icon {
-    display: none;
+}
+
+.views-actions-grid button,
+.views-actions-grid .file-btn {
+  min-height: 44px;
+}
+
+@media (max-width: 520px) {
+  .views-actions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px;
+  }
+
+  .views-actions-grid button,
+  .views-actions-grid .file-btn {
+    min-height: 46px;
+    padding-inline: 8px;
+  }
+
+  #exportJsonBtn {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .views-actions-grid .file-btn {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  #resetBtn {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  #createViewBtn {
+    grid-column: 2;
+    grid-row: 2;
   }
 }
