@@ -245,6 +245,13 @@ const els = {
   loginForm: document.querySelector("#loginForm"),
   loginUser: document.querySelector("#loginUser"),
   loginPassword: document.querySelector("#loginPassword"),
+  signupForm: document.querySelector("#signupForm"),
+  signupEmail: document.querySelector("#signupEmail"),
+  signupPassword: document.querySelector("#signupPassword"),
+  signupPasswordConfirm: document.querySelector("#signupPasswordConfirm"),
+  signupMasterKey: document.querySelector("#signupMasterKey"),
+  showSignupBtn: document.querySelector("#showSignupBtn"),
+  showLoginBtn: document.querySelector("#showLoginBtn"),
   loadingScreen: document.querySelector("#loadingScreen"),
   appMessageDialog: document.querySelector("#appMessageDialog"),
   appMessageIcon: document.querySelector("#appMessageIcon"),
@@ -362,6 +369,58 @@ async function setupLogin() {
       }
     });
   });
+
+  els.signupForm?.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const email = els.signupEmail.value.trim();
+    const password = els.signupPassword.value;
+    const passwordConfirm = els.signupPasswordConfirm.value;
+    const masterKey = els.signupMasterKey.value;
+
+    if (!email || !password || !passwordConfirm || !masterKey) return;
+
+    if (password !== passwordConfirm) {
+      await showAppAlert({
+        title: "Senhas diferentes",
+        message: "A senha e a confirmação precisam ser iguais.",
+        tone: "warning"
+      });
+      return;
+    }
+
+    setSignupLoading(true);
+
+    try {
+      const user = await getAuthConnector().register(email, password, masterKey);
+      await showAppAlert({
+        title: "Conta criada",
+        message: "Seu acesso foi criado com sucesso. Vamos carregar sua tabela.",
+        tone: "info"
+      });
+      await startLoadingSequence(user);
+    } catch (error) {
+      console.error(error);
+      await showAppAlert({
+        title: "Cadastro não autorizado",
+        message: getSignupErrorMessage(error),
+        tone: "danger"
+      });
+      setSignupLoading(false);
+    }
+  });
+
+  [els.signupEmail, els.signupPassword, els.signupPasswordConfirm, els.signupMasterKey].forEach(input => {
+    input?.addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.isComposing) {
+        event.preventDefault();
+        els.signupForm?.requestSubmit();
+      }
+    });
+  });
+
+  els.showSignupBtn?.addEventListener("click", () => setAuthMode("signup"));
+  els.showLoginBtn?.addEventListener("click", () => setAuthMode("login"));
 }
 
 function getAuthConnector() {
@@ -370,6 +429,10 @@ function getAuthConnector() {
       return sessionStorage.getItem("ei-harold-auth") === "ok" ? { uid: "local-dev-user" } : null;
     },
     async login(user) {
+      return { uid: "local-dev-user", email: user };
+    },
+    async register(user) {
+      sessionStorage.setItem("ei-harold-auth", "ok");
       return { uid: "local-dev-user", email: user };
     },
     async loadData() {
@@ -390,6 +453,35 @@ function setLoginLoading(isLoading) {
   if (!button) return;
   button.disabled = isLoading;
   button.classList.toggle("is-loading", isLoading);
+}
+
+function setSignupLoading(isLoading) {
+  const button = document.querySelector(".signup-button");
+  if (!button) return;
+  button.disabled = isLoading;
+  button.classList.toggle("is-loading", isLoading);
+}
+
+function setAuthMode(mode) {
+  const isSignup = mode === "signup";
+  els.loginForm?.classList.toggle("is-hidden", isSignup);
+  els.signupForm?.classList.toggle("is-hidden", !isSignup);
+  els.showSignupBtn?.classList.toggle("is-hidden", isSignup);
+  els.showLoginBtn?.classList.toggle("is-hidden", !isSignup);
+
+  setTimeout(() => {
+    if (isSignup) els.signupEmail?.focus();
+    else els.loginUser?.focus();
+  }, 0);
+}
+
+function getSignupErrorMessage(error) {
+  const code = error?.code || "";
+  if (code.includes("email-already-in-use")) return "Esse e-mail já possui uma conta. Volte para o login para entrar.";
+  if (code.includes("weak-password")) return "Use uma senha com pelo menos 6 caracteres.";
+  if (code.includes("invalid-email")) return "Digite um e-mail válido.";
+  if (code.includes("permission-denied")) return "A chave-mestra não confere ou o cadastro ainda não foi configurado no Firestore.";
+  return "Não foi possível criar a conta. Verifique os dados e tente novamente.";
 }
 
 function getMessageIcon(tone) {
@@ -480,6 +572,7 @@ async function startLoadingSequence(user) {
     els.loginScreen?.classList.remove("is-hidden");
   } finally {
     setLoginLoading(false);
+    setSignupLoading(false);
   }
 }
 

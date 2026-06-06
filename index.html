@@ -41,7 +41,44 @@
         </button>
       </form>
 
-      <p class="login-note"><a href="https://eiharold.com" target="_blank" rel="noopener noreferrer">Entre em contato</a> para obter acesso</p>
+      <form id="signupForm" class="login-form signup-form is-hidden">
+        <label>
+          E-mail
+          <input id="signupEmail" type="email" autocomplete="username" placeholder="seu@email.com" required>
+        </label>
+
+        <label>
+          Senha
+          <input id="signupPassword" type="password" autocomplete="new-password" placeholder="Crie uma senha" minlength="6" required>
+        </label>
+
+        <label>
+          Confirmar senha
+          <input id="signupPasswordConfirm" type="password" autocomplete="new-password" placeholder="Repita a senha" minlength="6" required>
+        </label>
+
+        <label>
+          Chave-mestra
+          <input id="signupMasterKey" type="password" autocomplete="off" placeholder="Chave de acesso" required>
+        </label>
+
+        <button class="primary signup-button" type="submit">
+          <span class="btn-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M19 8v6"/>
+              <path d="M22 11h-6"/>
+            </svg>
+          </span>
+          <span>Criar conta</span>
+        </button>
+      </form>
+
+      <p class="login-note">
+        <button type="button" id="showSignupBtn" class="login-link-button">Criar uma conta</button>
+        <button type="button" id="showLoginBtn" class="login-link-button is-hidden">Voltar para o login</button>
+      </p>
     </div>
 
     <p class="login-credit">

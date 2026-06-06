@@ -129,6 +129,20 @@ Esse documento contém:
 
 Quando o Firebase está ativo e um usuário ainda não tem documento no Firestore, o app cria uma view vazia, sem itens. Dados pessoais devem ser importados diretamente no Firestore do usuário e não ficam versionados no código público.
 
+### Cadastro com chave-mestra
+
+O cadastro público usa uma chave-mestra validada pelas regras do Firestore. A chave real não deve ficar no GitHub nem no JavaScript público.
+
+Para configurar sua própria chave:
+
+1. Escolha uma chave longa e difícil de adivinhar.
+2. Gere o SHA-256 da chave.
+3. No Firestore, crie o documento `appConfig/registration`.
+4. Adicione o campo `masterKeyHash` com o hash gerado.
+5. Publique as regras em `firestore.rules`.
+
+Em apps estáticos, essa proteção evita que o app crie documentos de dados sem a chave correta. Para impedir criação de usuários no Firebase Auth em nível absoluto, use uma camada de backend, como Cloud Functions ou um fluxo de convite administrado.
+
 ---
 
 ## Próximos passos possíveis

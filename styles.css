@@ -1969,6 +1969,11 @@ dialog {
   gap: 10px;
 }
 
+.login-form.is-hidden,
+.login-link-button.is-hidden {
+  display: none;
+}
+
 .login-form label {
   display: grid;
   gap: 6px;
@@ -1992,6 +1997,25 @@ dialog {
   min-height: 40px;
   margin-top: 4px;
   border-radius: 12px;
+}
+
+.signup-button {
+  min-height: 40px;
+  margin-top: 4px;
+  border-radius: 12px;
+}
+
+.login-link-button {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  font-weight: 850;
+}
+
+.login-link-button:hover {
+  text-decoration: underline;
 }
 
 .login-note {
@@ -2160,12 +2184,14 @@ dialog {
 }
 
 /* v1.1: loading real baseado no ciclo de carregamento dos dados */
-.login-button.is-loading {
+.login-button.is-loading,
+.signup-button.is-loading {
   opacity: .72;
   cursor: wait;
 }
 
-.login-button.is-loading span:last-child::after {
+.login-button.is-loading span:last-child::after,
+.signup-button.is-loading span:last-child::after {
   content: "...";
 }
 

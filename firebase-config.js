@@ -33,6 +33,8 @@ async function getFirebaseServices() {
       const {
         initializeApp,
         browserLocalPersistence,
+        createUserWithEmailAndPassword,
+        deleteUser,
         getAuth,
         onAuthStateChanged,
         setPersistence,
@@ -53,6 +55,8 @@ async function getFirebaseServices() {
         app,
         auth,
         db,
+        createUserWithEmailAndPassword,
+        deleteUser,
         doc,
         getDoc,
         onAuthStateChanged,
@@ -115,6 +119,44 @@ window.EI_HAROLD_FIREBASE = {
     return credential.user;
   },
 
+  async register(email, password, masterKey) {
+    if (!FIREBASE_ENABLED) {
+      sessionStorage.setItem(LOCAL_AUTH_KEY, "ok");
+      return { uid: "local-dev-user", email: email || "local@dev" };
+    }
+
+    const { auth, createUserWithEmailAndPassword, deleteUser, db, doc, serverTimestamp, setDoc } = await getFirebaseServices();
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = credential.user;
+    const viewId = crypto.randomUUID();
+    const masterKeyHash = await hashText(masterKey);
+    const ref = getFinanceDocRef(doc, db, user.uid);
+
+    try {
+      await setDoc(ref, {
+        views: [{ id: viewId, name: "Custo de Vida 2026.1", items: [] }],
+        activeViewId: viewId,
+        registration: {
+          masterKeyHash
+        },
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      await setDoc(ref, {
+        views: [{ id: viewId, name: "Custo de Vida 2026.1", items: [] }],
+        activeViewId: viewId,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      await deleteUser(user).catch(() => {});
+      throw error;
+    }
+
+    return user;
+  },
+
   async getCurrentUser() {
     if (!FIREBASE_ENABLED) {
       const isLoggedIn = sessionStorage.getItem(LOCAL_AUTH_KEY) === "ok";
@@ -160,3 +202,11 @@ window.EI_HAROLD_FIREBASE = {
     return true;
   }
 };
+
+async function hashText(value) {
+  const bytes = new TextEncoder().encode(String(value || ""));
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)]
+    .map(byte => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
