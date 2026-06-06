@@ -1,0 +1,8 @@
+firebase-env.js
+seed-owner-data.local.html
+owner-seed-data.local.json
+.DS_Store
+*.log
+node_modules/
+.firebase/
+.firebaserc

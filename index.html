@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ei Harold! • Custo de vida</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="app-locked">
+  <section class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-brand">
+        <img src="./logo-mini.svg" alt="" class="login-logo">
+        <div>
+          <h1><b>Ei Harold!</b> <span class="brand-dot">•</span> Custo de vida</h1>
+          <p>Um app minimalista de gerenciamento financeiro</p>
+        </div>
+      </div>
+
+      <form id="loginForm" class="login-form">
+        <label>
+          E-mail
+          <input id="loginUser" type="email" autocomplete="username" placeholder="seu@email.com" required>
+        </label>
+
+        <label>
+          Senha
+          <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Sua senha" required>
+        </label>
+
+        <button class="primary login-button" type="submit">
+          <span class="btn-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <path d="m10 17 5-5-5-5"/>
+              <path d="M15 12H3"/>
+            </svg>
+          </span>
+          <span>Entrar</span>
+        </button>
+      </form>
+
+      <p class="login-note"><a href="https://eiharold.com" target="_blank" rel="noopener noreferrer">Entre em contato</a> para obter acesso</p>
+    </div>
+
+    <p class="login-credit">
+      Feito com
+      <span class="heart-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 21s-7-4.35-9.33-8.78C.7 8.5 2.73 4.5 6.7 4.5c2.06 0 3.5 1.1 4.3 2.15.8-1.05 2.24-2.15 4.3-2.15 3.97 0 6 4 4.03 7.72C19 16.65 12 21 12 21Z"/>
+        </svg>
+      </span>
+      por <a href="https://eiharold.com" target="_blank" rel="noopener noreferrer">eiHarold.com</a>
+    </p>
+  </section>
+
+
+  <section class="loading-screen is-hidden" id="loadingScreen" aria-live="polite" aria-busy="true">
+    <div class="loading-card">
+      <div class="loading-spinner" aria-hidden="true">
+        <span class="spinner-ring ring-1"></span>
+        <span class="spinner-ring ring-2"></span>
+        <span class="spinner-core"></span>
+      </div>
+      <h2>Carregando seus dados</h2>
+      <p>Preparando suas views, gastos e gráficos...</p>
+    </div>
+  </section>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+    <div class="brand">
+      <img src="./logo-mini.svg" alt="" class="brand-logo">
+      <div class="brand-copy">
+        <h1><b>Ei Harold!</b> <span class="brand-dot">•</span> Custo de vida</h1>
+        <p>Visão geral dos gastos pessoais, empresa e investimentos.</p>
+      </div>
+    </div>
+
+    <div class="center-tools">
+      <nav class="tabs" aria-label="Alternar visualização">
+        <button id="tableTabBtn" class="tab active" type="button"><span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/></svg></span><span>Tabelas</span></button>
+        <button id="chartsTabBtn" class="tab" type="button"><span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></span><span>Gráficos</span></button>
+      </nav>
+      <input id="searchInput" type="search" placeholder="Buscar gasto..." />
+    </div>
+
+    <div class="actions">
+      <select id="viewSelect" title="Selecionar view"></select>
+      <button id="manageViewsBtn" type="button" class="icon-only header-icon" title="Gerenciar views" aria-label="Gerenciar views"><span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></span></button>
+      <button id="newItemBtn" class="primary"><span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span><span>Novo item</span></button>
+    </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="stats-line" id="summaryCards"></section>
+
+    <section class="view active" id="tableView">
+      <section class="board" id="columnsContainer"></section>
+    </section>
+
+    <section class="view" id="chartsView">
+      <section class="charts-dashboard">
+
+        <div class="chart-stack chart-large">
+          <article class="chart-card">
+            <header>
+              <h2>Custo mensal por grupo</h2>
+              <span>Provisionado</span>
+            </header>
+            <canvas id="groupChart"></canvas>
+          </article>
+
+          <article class="chart-card">
+            <header>
+              <h2>Mensais por importância</h2>
+              <span>Comparativo</span>
+            </header>
+            <canvas id="essentialCompleteChart"></canvas>
+          </article>
+        </div>
+
+        <article class="chart-card">
+          <header>
+            <h2>Pagamento</h2>
+            <span>Crédito x débito</span>
+          </header>
+          <canvas id="paymentChart"></canvas>
+        </article>
+
+        <article class="chart-card">
+          <header>
+            <h2>Composição mensal</h2>
+            <span>Por seção</span>
+          </header>
+          <canvas id="sectionChart"></canvas>
+        </article>
+
+        <article class="chart-card">
+          <header>
+            <h2>Renovações anuais</h2>
+            <span>Valor por mês</span>
+          </header>
+          <canvas id="renewalChart"></canvas>
+        </article>
+
+        <article class="chart-card">
+          <header>
+            <h2>Maiores gastos</h2>
+            <span>Top 6 mensal</span>
+          </header>
+          <canvas id="topCostsChart"></canvas>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="app-footer-inner">
+      <p>
+        Feito com
+        <span class="heart-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 21s-7-4.35-9.33-8.78C.7 8.5 2.73 4.5 6.7 4.5c2.06 0 3.5 1.1 4.3 2.15.8-1.05 2.24-2.15 4.3-2.15 3.97 0 6 4 4.03 7.72C19 16.65 12 21 12 21Z"/>
+          </svg>
+        </span>
+        por <a href="https://eiharold.com" target="_blank" rel="noopener noreferrer">eiHarold.com</a>
+        <span class="footer-separator" aria-hidden="true">•</span>
+        <span>Direitos reservados © <span id="currentYear">2026</span></span>
+        <span class="footer-separator" aria-hidden="true">•</span>
+        <button type="button" id="logoutBtn" class="footer-logout">Sair</button>
+      </p>
+    </div>
+  </footer>
+
+
+  <dialog id="viewsDialog">
+    <form method="dialog" class="modal views-modal">
+      <div class="modal-head">
+        <div>
+          <h2>Gerenciar views</h2>
+          <p class="modal-subtitle">Crie versões diferentes da sua tabela, como Custo de Vida 2026.1, 2026.2 ou 2027.</p>
+        </div>
+        <button type="button" id="closeViewsDialogBtn" class="icon">×</button>
+      </div>
+
+      <div class="views-manager">
+        <div class="view-preview" id="viewPreview"></div>
+
+        <div class="views-list" id="viewsList"></div>
+
+        <div class="views-divider"></div>
+
+        <div class="views-actions views-actions-grid">
+          <button type="button" id="exportJsonBtn"><span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></span><span>Exportar</span></button>
+          <label class="file-btn">
+            <span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg></span><span>Importar</span>
+            <input type="file" id="importJsonInput" accept="application/json" hidden>
+          </label>
+          <button type="button" id="resetBtn"><span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v6h6"/><path d="M21 12a9 9 0 0 0-15.55-6.36L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15.55 6.36L21 16"/></svg></span><span>Resetar</span></button>
+          <button type="button" id="createViewBtn" class="primary"><span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span><span>Criar nova</span></button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="itemDialog">
+    <form method="dialog" id="itemForm" class="modal">
+      <div class="modal-head">
+        <div>
+          <h2 id="modalTitle">Novo gasto</h2>
+          <p class="modal-subtitle">Edite apenas o essencial para manter a planilha limpa e rápida.</p>
+        </div>
+        <button type="button" id="closeDialogBtn" class="icon">×</button>
+      </div>
+
+      <input type="hidden" id="itemId">
+
+      <div class="modal-preview" id="modalPreview">
+        <span class="category-icon preview-icon"></span>
+        <div class="item-copy">
+          <strong>Nome do item</strong>
+          <small class="item-meta"><span>R$ 0,00/ano</span></small>
+        </div>
+        <div class="value">R$ 0,00</div>
+        <span class="badge debito">D</span>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-row-name">
+          <label class="field-name">
+            Nome
+            <input id="name" required placeholder="Ex: Netflix">
+          </label>
+
+          <label class="importance-field">
+            Importância
+            <select id="importance">
+              <option value="none">Baixa</option>
+              <option value="essential">Essencial</option>
+              <option value="mandatory">Obrigatório</option>
+              <option value="both">Essencial e Obrigatório</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="field-type">
+          Tipo de gasto
+          <select id="section" required>
+            <option value="fixas_mensais">Despesas fixas</option>
+            <option value="assinaturas_mensais">Assinaturas</option>
+            <option value="variaveis_mensais">Despesas variáveis</option>
+            <option value="empresa_mensal">Empresa</option>
+            <option value="investimentos">Investimentos</option>
+          </select>
+        </label>
+
+        <label class="field-recurrence">
+          Recorrência
+          <select id="recurrence" required>
+            <option value="mensal">Mensal</option>
+            <option value="anual">Anual</option>
+          </select>
+        </label>
+
+        <label class="field-category">
+          Categoria
+          <select id="category" required>
+            <option value="moradia">Moradia</option>
+            <option value="alimentacao">Alimentação e saúde</option>
+            <option value="contas">Contas e serviços</option>
+            <option value="assinaturas">Assinaturas e softwares</option>
+            <option value="transporte">Transporte</option>
+            <option value="impostos">Impostos e dívidas</option>
+            <option value="pet">Pet</option>
+            <option value="lazer">Lazer e educação</option>
+            <option value="empresa">Empresa</option>
+            <option value="investimentos">Investimentos</option>
+            <option value="outros">Outros</option>
+          </select>
+        </label>
+
+        <div class="form-row-three">
+        <label id="monthlyField" class="field-value value-field">
+          Valor mensal
+          <input id="monthlyValue" type="number" min="0" step="0.01" placeholder="0,00">
+        </label>
+
+        <label id="annualField" class="field-value value-field">
+          Valor anual
+          <input id="annualValue" type="number" min="0" step="0.01" placeholder="0,00">
+        </label>
+
+        <label class="field-payment">
+          Pagamento
+          <select id="payment" required>
+            <option value="debito">Débito</option>
+            <option value="cartao">Crédito</option>
+          </select>
+        </label>
+
+        <label id="renewalField" class="field-renewal renewal-field">
+          Mês da renovação
+          <select id="renewalMonth"></select>
+        </label>
+        </div>
+      </div>
+
+      <footer class="modal-actions">
+        <button type="button" id="deleteItemBtn" class="danger"><span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></span><span>Remover item</span></button>
+        <div class="modal-actions-right">
+          <button type="button" id="cancelBtn"><span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span><span>Cancelar</span></button>
+          <button class="primary"><span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7.8z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg></span><span>Salvar</span></button>
+        </div>
+      </footer>
+    </form>
+  </dialog>
+
+
+  <template id="columnTemplate">
+    <article class="column">
+      <header class="column-header">
+        <div>
+          <h2 class="column-title"></h2>
+          <span class="column-subtitle"></span>
+        </div>
+        <div class="column-total"></div>
+      </header>
+      <div class="sections"></div>
+    </article>
+  </template>
+
+  <template id="sectionTemplate">
+    <section class="mini-section">
+      <div class="section-title">
+        <div>
+          <span></span>
+          <strong></strong>
+        </div>
+        <button class="section-add" type="button" title="Adicionar item nesta seção"><span class="btn-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></button>
+      </div>
+      <div class="items"></div>
+    </section>
+  </template>
+
+  <script src="./firebase-env.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
