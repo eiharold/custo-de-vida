@@ -2720,3 +2720,122 @@ dialog .modal {
     display: none;
   }
 }
+
+/* Ajustes finais de proporção dos controles */
+:root {
+  --top-control-height: 40px;
+}
+
+.tabs,
+.center-tools input,
+.actions select,
+#manageViewsBtn,
+#newItemBtn {
+  min-height: var(--top-control-height) !important;
+  height: var(--top-control-height) !important;
+}
+
+.tabs {
+  align-items: center;
+}
+
+.tab {
+  min-height: calc(var(--top-control-height) - 8px) !important;
+}
+
+.center-tools input,
+.actions select {
+  border-radius: 12px;
+}
+
+#manageViewsBtn,
+#newItemBtn {
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.form-grid,
+.form-row-name,
+.form-row-three {
+  width: 100%;
+  min-width: 0;
+}
+
+.form-grid label,
+.form-row-name label,
+.form-row-three label {
+  width: 100%;
+  min-width: 0;
+}
+
+.form-grid input,
+.form-grid select,
+.form-grid textarea,
+.form-row-name input,
+.form-row-name select,
+.form-row-three input,
+.form-row-three select {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 800px) {
+  .actions {
+    grid-template-columns: minmax(0, 1fr) var(--top-control-height) var(--top-control-height) !important;
+    grid-auto-flow: column;
+    align-items: center;
+  }
+
+  .actions select {
+    grid-column: 1;
+  }
+
+  #manageViewsBtn {
+    grid-column: 2;
+    display: inline-flex !important;
+    width: var(--top-control-height) !important;
+    min-width: var(--top-control-height) !important;
+    padding: 0 !important;
+  }
+
+  #newItemBtn {
+    grid-column: 3;
+    width: var(--top-control-height) !important;
+    min-width: var(--top-control-height) !important;
+    padding: 0 !important;
+  }
+
+  #newItemBtn span:last-child {
+    display: none !important;
+  }
+
+  .app-footer p {
+    max-width: none;
+    font-size: 10.5px;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+
+  .app-footer p > a {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .form-grid,
+  .form-row-name,
+  .form-row-three {
+    grid-template-columns: 1fr !important;
+  }
+
+  .field-type,
+  .field-recurrence,
+  .field-category,
+  .form-row-three #monthlyField,
+  .form-row-three #annualField,
+  .form-row-three #renewalField,
+  .form-row-three .field-payment {
+    grid-column: 1 / -1 !important;
+  }
+}
