@@ -3,6 +3,11 @@
     "public": ".",
     "ignore": [
       "firebase.json",
+      "README.md",
+      "firestore.rules",
+      "firebase-env.example.js",
+      "seed-owner-data.local.html",
+      "owner-seed-data.local.json",
       "**/.*",
       "**/node_modules/**"
     ],
