@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "eiharold-custo-de-vida",
     "public": ".",
     "ignore": [
       "firebase.json",
