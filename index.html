@@ -318,6 +318,20 @@
     </form>
   </dialog>
 
+  <dialog id="appMessageDialog" class="app-message-dialog">
+    <form method="dialog" class="modal app-message-modal">
+      <div class="app-message-icon" id="appMessageIcon" aria-hidden="true"></div>
+      <div class="app-message-copy">
+        <h2 id="appMessageTitle">Aviso</h2>
+        <p id="appMessageText"></p>
+      </div>
+      <footer class="app-message-actions">
+        <button type="button" id="appMessageCancelBtn">Cancelar</button>
+        <button type="submit" id="appMessageConfirmBtn" class="primary">Ok</button>
+      </footer>
+    </form>
+  </dialog>
+
 
   <template id="columnTemplate">
     <article class="column">

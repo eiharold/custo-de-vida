@@ -1059,6 +1059,74 @@ dialog {
   font-size: 11px;
 }
 
+.app-message-dialog {
+  width: min(430px, calc(100vw - 28px));
+}
+
+.app-message-modal {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 14px;
+  padding: 18px;
+}
+
+.app-message-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--blue);
+  color: #516174;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.75);
+}
+
+.app-message-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.app-message-dialog[data-tone="danger"] .app-message-icon {
+  background: var(--rose);
+  color: #9b2c2c;
+}
+
+.app-message-dialog[data-tone="warning"] .app-message-icon {
+  background: var(--yellow);
+  color: #a16207;
+}
+
+.app-message-copy {
+  min-width: 0;
+}
+
+.app-message-copy h2 {
+  margin: 2px 0 5px;
+  font-size: 18px;
+  letter-spacing: -0.03em;
+}
+
+.app-message-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.app-message-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.app-message-actions button {
+  min-width: 92px;
+  min-height: 34px;
+  border-radius: 10px;
+}
+
 .form-grid {
   gap: 10px;
 }
@@ -1848,6 +1916,10 @@ dialog {
 .app-locked main,
 .app-locked dialog {
   display: none !important;
+}
+
+.app-locked #appMessageDialog[open] {
+  display: block !important;
 }
 
 .login-card {

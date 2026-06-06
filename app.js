@@ -246,6 +246,12 @@ const els = {
   loginUser: document.querySelector("#loginUser"),
   loginPassword: document.querySelector("#loginPassword"),
   loadingScreen: document.querySelector("#loadingScreen"),
+  appMessageDialog: document.querySelector("#appMessageDialog"),
+  appMessageIcon: document.querySelector("#appMessageIcon"),
+  appMessageTitle: document.querySelector("#appMessageTitle"),
+  appMessageText: document.querySelector("#appMessageText"),
+  appMessageCancelBtn: document.querySelector("#appMessageCancelBtn"),
+  appMessageConfirmBtn: document.querySelector("#appMessageConfirmBtn"),
   logoutBtn: document.querySelector("#logoutBtn"),
   currentYear: document.querySelector("#currentYear"),
   searchInput: document.querySelector("#searchInput"),
@@ -339,9 +345,22 @@ async function setupLogin() {
       await startLoadingSequence(authenticatedUser);
     } catch (error) {
       console.error(error);
-      alert("Não foi possível entrar. Verifique usuário e senha.");
+      await showAppAlert({
+        title: "Não foi possível entrar",
+        message: "Verifique seu e-mail e senha e tente novamente.",
+        tone: "danger"
+      });
       setLoginLoading(false);
     }
+  });
+
+  [els.loginUser, els.loginPassword].forEach(input => {
+    input?.addEventListener("keydown", event => {
+      if (event.key === "Enter" && !event.isComposing) {
+        event.preventDefault();
+        els.loginForm?.requestSubmit();
+      }
+    });
   });
 }
 
@@ -373,6 +392,75 @@ function setLoginLoading(isLoading) {
   button.classList.toggle("is-loading", isLoading);
 }
 
+function getMessageIcon(tone) {
+  const icons = {
+    danger: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>',
+    warning: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 7.5V12c0 5 3.8 8.7 9 9 5.2-.3 9-4 9-9V7.5Z"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg>',
+    info: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'
+  };
+
+  return icons[tone] || icons.info;
+}
+
+function showAppMessage({ title = "Aviso", message = "", tone = "info", confirmText = "Ok", cancelText = "Cancelar", showCancel = false } = {}) {
+  return new Promise(resolve => {
+    if (!els.appMessageDialog) {
+      resolve(showCancel ? window.confirm(message || title) : (window.alert(message || title), true));
+      return;
+    }
+
+    let settled = false;
+
+    const settle = value => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      if (els.appMessageDialog.open) els.appMessageDialog.close();
+      resolve(value);
+    };
+
+    const cleanup = () => {
+      els.appMessageConfirmBtn?.removeEventListener("click", onConfirm);
+      els.appMessageCancelBtn?.removeEventListener("click", onCancel);
+      els.appMessageDialog?.removeEventListener("cancel", onCancel);
+      els.appMessageDialog?.removeEventListener("close", onClose);
+    };
+
+    const onConfirm = event => {
+      event.preventDefault();
+      settle(true);
+    };
+    const onCancel = event => {
+      event.preventDefault();
+      settle(false);
+    };
+    const onClose = () => settle(false);
+
+    els.appMessageTitle.textContent = title;
+    els.appMessageText.textContent = message;
+    els.appMessageIcon.innerHTML = getMessageIcon(tone);
+    els.appMessageDialog.dataset.tone = tone;
+    els.appMessageConfirmBtn.textContent = confirmText;
+    els.appMessageCancelBtn.textContent = cancelText;
+    els.appMessageCancelBtn.hidden = !showCancel;
+
+    els.appMessageConfirmBtn?.addEventListener("click", onConfirm);
+    els.appMessageCancelBtn?.addEventListener("click", onCancel);
+    els.appMessageDialog?.addEventListener("cancel", onCancel);
+    els.appMessageDialog?.addEventListener("close", onClose);
+    els.appMessageDialog.showModal();
+    setTimeout(() => els.appMessageConfirmBtn?.focus(), 0);
+  });
+}
+
+function showAppAlert(options) {
+  return showAppMessage({ confirmText: "Entendi", ...options, showCancel: false });
+}
+
+function showAppConfirm(options) {
+  return showAppMessage({ confirmText: "Confirmar", cancelText: "Cancelar", tone: "warning", ...options, showCancel: true });
+}
+
 async function startLoadingSequence(user) {
   document.body.classList.add("app-locked");
   els.loginScreen?.classList.add("is-hidden");
@@ -383,7 +471,11 @@ async function startLoadingSequence(user) {
     unlockApp();
   } catch (error) {
     console.error(error);
-    alert("Não foi possível carregar seus dados.");
+    await showAppAlert({
+      title: "Falha ao carregar",
+      message: "Não foi possível carregar seus dados agora. Tente novamente em instantes.",
+      tone: "danger"
+    });
     els.loadingScreen?.classList.add("is-hidden");
     els.loginScreen?.classList.remove("is-hidden");
   } finally {
@@ -1023,12 +1115,18 @@ function saveForm(e) {
   render();
 }
 
-function deleteCurrentItem() {
+async function deleteCurrentItem() {
   const id = els.itemId.value;
   const existing = getItems().find(i => i.id === id);
   if (!existing) return;
 
-  if (!confirm(`Remover "${existing.name}"?`)) return;
+  const confirmed = await showAppConfirm({
+    title: "Remover item?",
+    message: `O item "${existing.name}" será removido da view atual.`,
+    confirmText: "Remover",
+    tone: "danger"
+  });
+  if (!confirmed) return;
 
   setItems(getItems().filter(i => i.id !== id));
   persist();
@@ -1041,17 +1139,29 @@ window.editItem = id => {
   if (existing) openDialog(existing);
 };
 
-window.deleteItem = id => {
+window.deleteItem = async id => {
   const existing = getItems().find(i => i.id === id);
   if (!existing) return;
-  if (!confirm(`Remover "${existing.name}"?`)) return;
+  const confirmed = await showAppConfirm({
+    title: "Remover item?",
+    message: `O item "${existing.name}" será removido da view atual.`,
+    confirmText: "Remover",
+    tone: "danger"
+  });
+  if (!confirmed) return;
   setItems(getItems().filter(i => i.id !== id));
   persist();
   render();
 };
 
-function resetData() {
-  if (!confirm("Resetar a view atual para os dados iniciais?")) return;
+async function resetData() {
+  const confirmed = await showAppConfirm({
+    title: "Resetar view?",
+    message: "A view atual voltará para os dados iniciais. Esta ação não altera as outras views.",
+    confirmText: "Resetar",
+    tone: "warning"
+  });
+  if (!confirmed) return;
   getActiveView().items = defaultItems.map(i => ({ ...i, id: crypto.randomUUID() }));
   persist();
   render();
@@ -1093,7 +1203,11 @@ function importJson(e) {
       render();
       closeViewsDialog();
     } catch {
-      alert("Arquivo inválido.");
+      showAppAlert({
+        title: "Arquivo inválido",
+        message: "Não foi possível importar esse arquivo. Verifique se ele é um JSON exportado pelo app.",
+        tone: "danger"
+      });
     }
     e.target.value = "";
   };
@@ -1174,23 +1288,34 @@ window.duplicateViewById = function duplicateViewById(id) {
 
 window.removeView = function removeView(id) {
   if (state.views.length <= 1) {
-    alert("Você precisa manter pelo menos uma view.");
+    showAppAlert({
+      title: "Uma view é necessária",
+      message: "Você precisa manter pelo menos uma view para o app funcionar.",
+      tone: "info"
+    });
     return;
   }
 
   const view = state.views.find(view => view.id === id);
   if (!view) return;
 
-  if (!confirm(`Excluir a view "${view.name}"?`)) return;
+  showAppConfirm({
+    title: "Excluir view?",
+    message: `A view "${view.name}" será removida com todos os itens dela.`,
+    confirmText: "Excluir",
+    tone: "danger"
+  }).then(confirmed => {
+    if (!confirmed) return;
 
-  state.views = state.views.filter(view => view.id !== id);
-  if (state.activeViewId === id) {
-    state.activeViewId = state.views[0].id;
-  }
+    state.views = state.views.filter(view => view.id !== id);
+    if (state.activeViewId === id) {
+      state.activeViewId = state.views[0].id;
+    }
 
-  persist();
-  renderViewSelect();
-  render();
+    persist();
+    renderViewSelect();
+    render();
+  });
 };
 
 
