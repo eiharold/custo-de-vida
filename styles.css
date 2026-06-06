@@ -27,6 +27,10 @@ button, input, select, textarea {
   font: inherit;
 }
 
+input, select, textarea {
+  font-size: 16px;
+}
+
 button, select, input, textarea {
   border: 1px solid var(--line);
   border-radius: 8px;
