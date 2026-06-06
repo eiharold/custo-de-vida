@@ -250,6 +250,7 @@ const els = {
   signupPassword: document.querySelector("#signupPassword"),
   signupPasswordConfirm: document.querySelector("#signupPasswordConfirm"),
   signupMasterKey: document.querySelector("#signupMasterKey"),
+  signupNoteText: document.querySelector("#signupNoteText"),
   showSignupBtn: document.querySelector("#showSignupBtn"),
   showLoginBtn: document.querySelector("#showLoginBtn"),
   loadingScreen: document.querySelector("#loadingScreen"),
@@ -466,7 +467,7 @@ function setAuthMode(mode) {
   const isSignup = mode === "signup";
   els.loginForm?.classList.toggle("is-hidden", isSignup);
   els.signupForm?.classList.toggle("is-hidden", !isSignup);
-  els.showSignupBtn?.classList.toggle("is-hidden", isSignup);
+  els.signupNoteText?.classList.toggle("is-hidden", isSignup);
   els.showLoginBtn?.classList.toggle("is-hidden", !isSignup);
 
   setTimeout(() => {
