@@ -1217,9 +1217,9 @@ async function deleteCurrentItem() {
   if (!existing) return;
 
   const confirmed = await showAppConfirm({
-    title: "Remover item?",
+    title: "Excluir item?",
     message: `O item "${existing.name}" será removido da view atual.`,
-    confirmText: "Remover",
+    confirmText: "Excluir",
     tone: "danger"
   });
   if (!confirmed) return;
@@ -1239,9 +1239,9 @@ window.deleteItem = async id => {
   const existing = getItems().find(i => i.id === id);
   if (!existing) return;
   const confirmed = await showAppConfirm({
-    title: "Remover item?",
+    title: "Excluir item?",
     message: `O item "${existing.name}" será removido da view atual.`,
-    confirmText: "Remover",
+    confirmText: "Excluir",
     tone: "danger"
   });
   if (!confirmed) return;

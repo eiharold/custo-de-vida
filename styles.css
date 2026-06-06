@@ -2839,3 +2839,55 @@ dialog .modal {
     grid-column: 1 / -1 !important;
   }
 }
+
+/* Refinos finais de formularios */
+@media (min-width: 801px) {
+  input,
+  select,
+  textarea {
+    font-size: 14px;
+    font-weight: 400;
+  }
+}
+
+.form-grid input,
+.form-grid select,
+.form-grid textarea,
+.center-tools input,
+.actions select,
+.view-name-input {
+  font-weight: 400 !important;
+}
+
+.modal-actions {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-actions-right {
+  display: contents;
+}
+
+.modal-actions button {
+  width: 100%;
+  min-height: 44px;
+  justify-content: center;
+}
+
+@media (max-width: 520px) {
+  .modal-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 7px;
+  }
+
+  .modal-actions button {
+    min-height: 46px;
+    padding-inline: 6px;
+  }
+
+  .modal-actions .btn-icon {
+    display: none;
+  }
+}
